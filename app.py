@@ -44,7 +44,7 @@ def home():
 @app.route('/logout')
 @login_required
 def logout():
-    user_loader()
+    logout_user()
     return redirect(url_for('home'))
 
 if __name__ == '__main__':
