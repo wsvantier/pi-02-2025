@@ -1,5 +1,6 @@
 from flask import Flask, redirect, request, render_template, url_for
 from flask_login import login_required, login_user, logout_user
+from werkzeug.security import generate_password_hash
 from database import db, Usuario
 from login import lm
 
@@ -23,12 +24,12 @@ def login():
     if request.method == 'POST':
         user = request.form['userForm']
         senha = request.form['senhaForm']
+                
+        usuario = Usuario.query.filter_by(user=user).first()
         
-        busca = Usuario.query.filter_by(user = user, senha = senha).first()
-        
-        if busca:
-            login_user(busca)
-            return redirect(url_for('home'))
+        if usuario and usuario.verificar_senha(senha):
+            login_user(usuario)
+            return redirect(url_for("home"))
         else:
             return redirect(url_for('login'))
             
@@ -51,7 +52,8 @@ if __name__ == '__main__':
     with app.app_context():
         db.create_all()
         if not Usuario.query.filter_by(user = 'admin').first():
-            admin = Usuario(user = 'admin', senha = '12345', tipo = 'admin')
+            admin = Usuario(user = 'admin', tipo = 'admin')
+            admin.set_senha('12345')
             db.session.add(admin)
             db.session.commit()
             
