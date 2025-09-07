@@ -67,5 +67,5 @@ if __name__ == '__main__':
             db.session.add_all(usuarios_teste)  # Usuarios somente para testes
             db.session.commit()
 
-            
+    
     app.run(debug=True)
