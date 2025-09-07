@@ -1,6 +1,5 @@
 from flask import Flask, redirect, request, render_template, url_for
 from flask_login import login_required, login_user, logout_user
-from werkzeug.security import generate_password_hash
 from database import db, Usuario
 from login import lm
 
@@ -29,7 +28,12 @@ def login():
         
         if usuario and usuario.verificar_senha(senha):
             login_user(usuario)
-            return redirect(url_for("home"))
+            if usuario.tipo == 'admin':
+                return render_template('admin.html')
+            elif usuario.tipo == 'cozinha':
+                return render_template('cozinha.html')
+            else:
+                return render_template('cardapio.html')
         else:
             return redirect(url_for('login'))
             
@@ -54,7 +58,11 @@ if __name__ == '__main__':
         if not Usuario.query.filter_by(user = 'admin').first():
             admin = Usuario(user = 'admin', tipo = 'admin')
             admin.set_senha('12345')
-            db.session.add(admin)
+            cozinha = Usuario(user = 'cozinha' , tipo = 'cozinha')
+            cozinha.set_senha('12345')
+            func = Usuario(user='funcionario', tipo = 'funcionario')
+            func.set_senha('12345')        
+            db.session.add_all([admin, cozinha, func])
             db.session.commit()
             
     app.run(debug=True)
