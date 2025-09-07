@@ -1,5 +1,5 @@
 from flask import Flask, redirect, request, render_template, url_for
-from flask_login import login_required, login_user, logout_user
+from flask_login import login_required, login_user, logout_user, current_user
 from database import db, Usuario
 from login import lm
 
@@ -29,11 +29,11 @@ def login():
         if usuario and usuario.verificar_senha(senha):
             login_user(usuario)
             if usuario.tipo == 'admin':
-                return render_template('admin.html')
+                return redirect(url_for('admin'))
             elif usuario.tipo == 'cozinha':
-                return render_template('cozinha.html')
+                return redirect(url_for('cozinha'))
             else:
-                return render_template('cardapio.html')
+                return redirect(url_for('cardapio'))
         else:
             return redirect(url_for('login'))
             
@@ -41,16 +41,32 @@ def login():
     return render_template('login.html')
 
 
-@app.route('/home')
+@app.route('/admin')
 @login_required
-def home():
-    return 'Logado com sucesso'
+def admin():
+    if current_user.tipo != 'admin':
+        return redirect(url_for('cozinha'))
+    
+    return render_template('admin.html')
+
+@app.route('/cardapio')
+@login_required
+def cardapio():
+    return render_template('cardapio.html')
+
+@app.route('/cozinha')
+@login_required
+def cozinha():
+    if current_user.tipo == 'funcionario':
+        return redirect(url_for('cardapio'))
+    return render_template('cozinha.html')
+
 
 @app.route('/logout')
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('home'))
+    return redirect(url_for('login'))
 
 if __name__ == '__main__':
     with app.app_context():
