@@ -56,13 +56,16 @@ if __name__ == '__main__':
     with app.app_context():
         db.create_all()
         if not Usuario.query.filter_by(user = 'admin').first():
-            admin = Usuario(user = 'admin', tipo = 'admin')
-            admin.set_senha('12345')
-            cozinha = Usuario(user = 'cozinha' , tipo = 'cozinha')
-            cozinha.set_senha('12345')
-            func = Usuario(user='funcionario', tipo = 'funcionario')
-            func.set_senha('12345')        
-            db.session.add_all([admin, cozinha, func])
+            usuarios = ['admin', 'cozinha', 'funcionario']
+
+            usuarios_teste = []
+            for u in usuarios:
+                user = Usuario(user=u, tipo=u)  # cria o objeto sem senha
+                user.set_senha('12345')         # define a senha usando set_senha
+                usuarios_teste.append(user)
+
+            db.session.add_all(usuarios_teste)  # Usuarios somente para testes
             db.session.commit()
+
             
     app.run(debug=True)
