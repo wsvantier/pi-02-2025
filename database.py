@@ -15,4 +15,32 @@ class Usuario(UserMixin, db.Model):
         
     def verificar_senha(self, senha):
         return check_password_hash(self.senha, senha)
-        
+    
+class Cardapio(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    data = db.Column(db.Date, nullable=False)
+    opcoes = db.relationship('Opcao', backref='cardapio', lazy=True)
+
+class Opcao(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    cardapio_id = db.Column(db.Integer, db.ForeignKey('cardapio.id'), nullable=False)
+    categoria = db.Column(db.Enum('mistura','bebida','sobremesa'), nullable=False)
+    descricao = db.Column(db.String(), nullable=False)
+    
+class Pedido(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    usuario_id = db.Column(db.Integer, db.ForeignKey('usuario.id'), nullable=False)
+    cardapio_id = db.Column(db.Integer, db.ForeignKey('cardapio.id'), nullable=False)
+    status = db.Column(db.Enum('pendente','confirmado','cancelado'), nullable=False)
+    data_pedido = db.Column(db.Date, nullable=False)
+    
+    usuario = db.relationship('Usuario', backref='pedidos', lazy=True)
+    cardapio = db.relationship('Cardapio', backref='pedidos', lazy=True)
+
+class PedidoItem(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    pedido_id = db.Column(db.Integer, db.ForeignKey('pedido.id'), nullable=False)
+    opcao_id = db.Column(db.Integer, db.ForeignKey('opcao.id'), nullable=False)
+    
+    pedido = db.relationship('Pedido', backref='itens', lazy=True)
+    opcao = db.relationship('Opcao', backref='itens', lazy=True)
