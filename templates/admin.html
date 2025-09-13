@@ -1,12 +1,38 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Administração</title>
-</head>
-<body>
-    Administração <br>
-    <a href="/logout"> Logout </a>
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block titulo %} Administração {% endblock %}
+
+{% block corpo %}
+
+Administração <br>
+
+<a href="{{url_for('auth.logout')}}"> Sair </a>
+<div class="container">
+
+   
+    <div id="cadUser">
+         <h3> Cadastro de Usuarios </h3> 
+        <form action="" method="post">
+
+            Nome: <input type="text" name="nomeForm" id="nomeForm"><br>
+            Usuario: <input type="text" name="userForm" id="userForm"><br>
+            Senha: <input type="password" name="senhaForm" id="senhaForm"><br>
+            <input type="submit" value="Cadastrar">
+
+        </form>
+    </div>
+    <div id="listUser">
+        <h3> Usuarios Cadastrados</h3>
+        <table>
+            <thead>
+                <th>Usuario</th>
+                <th>Nome</th>
+                <th>Ação</th>
+            </thead>
+            <tbody id="usuarios">
+
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

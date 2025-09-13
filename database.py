@@ -7,6 +7,7 @@ db = SQLAlchemy()
 class Usuario(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key = True)
     user = db.Column(db.String(), nullable = False, unique = True)
+    nome = db.Column(db.String(), nullable = False, unique = False)
     senha = db.Column(db.String(), nullable = False)
     tipo = db.Column(db.Enum('cozinha','funcionario','admin'), nullable=False, default='funcionario')
     

@@ -31,7 +31,7 @@ with app.app_context():
     if not Usuario.query.filter_by(user='admin').first():
         usuarios = ['admin', 'cozinha', 'funcionario']
         for u in usuarios:
-            user = Usuario(user=u, tipo=u)
+            user = Usuario(user=u, nome=u, tipo=u)
             user.set_senha('12345')
             db.session.add(user)
         db.session.commit()
