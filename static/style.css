@@ -2,13 +2,17 @@ div.container{
     display: flex;
 }
 
+div#addDia{
+    width: 50%;
+}
+
 div#cadUser{
     width: 30%;
     text-align: right;
     margin: auto;
 }
 
-#cadUser input{
+input{
     margin: 5px;
 }
 
@@ -18,11 +22,17 @@ div#listUser{
     
 }
 
-div#listUser table{
+ div#listOpc{
+    width: 50%;
+
+ }
+
+table{
     margin: auto;
     text-align: center;
     border: 1px solid gray;
     border-collapse: collapse;
+    margin-top: 10px;
 }
 
 

@@ -8,5 +8,49 @@ Cozinha <br>
 
 <a href="{{url_for('auth.logout')}}"> Sair </a>
 
+<div class="container">
+
+    <div id="addDia">
+        <h3> Adicionar Cardapio (dia)</h3>
+        <form action="" method="post">
+            <input type="date" name="dataForm" id="dataForm">
+            <input type="submit" value="Adicionar">
+        </form>
+        <h3>Adicionar Opções ao Cardapio</h3>
+        <form action="" method="post">
+
+            Dia: <select name="diaSelect" id="diaSelect">
+                <option value="" selected disabled>-- Selecione --</option>
+            </select><br>
+            Descrição: <input type="text" name="descForm" id="descForm"><br>
+            Categoria: <select name="catSelect" id="catSelect">
+                <option value="" selected disabled>-- Selecione --</option>
+                <option value="mistura">Mistura</option>
+                <option value="bebida">Bebida</option>
+                <option value="sobremesa">Sobremesa</option>
+            </select><br>
+            <input type="submit" value="Adicionar">
+        </form>
+    </div>
+    <div id="listOpc">
+        <h3> Cardapio do Dia</h3>
+        <form action="" method="post">
+           Selecione o dia do Cardapio: 
+            <select name="diaSelect" id="diaSelect">
+                <option value="" selected disabled>-- Selecione --</option>
+            </select><br>
+        </form>
+        <table>
+            <thead>
+                <th>Mistura</th>
+                <th>Bebida</th>
+                <th>Sobremesa</th>
+            </thead>
+            <tbody id="cadapio-dia">
+
+            </tbody>
+        </table>
+    </div>
+</div>
 
 {% endblock %}
