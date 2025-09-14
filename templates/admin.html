@@ -9,10 +9,10 @@ Administração <br>
 <a href="{{url_for('auth.logout')}}"> Sair </a>
 <div class="container">
 
-   
+
     <div id="cadUser">
-         <h3> Cadastro de Usuarios </h3> 
-        <form action="" method="post">
+        <h3> Cadastro de Usuarios </h3>
+        <form action="/admin//inserir" method="post">
 
             Nome: <input type="text" name="nomeForm" id="nomeForm" required><br>
             Usuario: <input type="text" name="userForm" id="userForm" required><br>
@@ -21,24 +21,31 @@ Administração <br>
                 <option value="" selected disabled>-- Selecione --</option>
                 <option value="admin"> Administrador </option>
                 <option value="cozinha"> Cozinha </option>
-                <option value="funcionario"> Funcionario  </option>
+                <option value="funcionario"> Funcionario </option>
             </select> <br>
             <input type="submit" value="Cadastrar">
 
         </form>
     </div>
     <div id="listUser">
-        <h3> Usuarios Cadastrados</h3>
+        <h3>
+            Usuários Cadastrados
+            <button type="button" onclick="listarUsuarios()">Carregar dados</button>
+        </h3>
         <table>
             <thead>
-                <th>Usuario</th>
-                <th>Nome</th>
-                <th>Ação</th>
+                <tr>
+                    <th>Usuario</th>
+                    <th>Nome</th>
+                    <th>Tipo</th>
+                    <th>Ação</th>
+                </tr>
             </thead>
             <tbody id="usuarios">
-
+                <!-- os dados serão preenchidos via JS -->
             </tbody>
         </table>
     </div>
-</div>
-{% endblock %}
+
+
+    {% endblock %}
