@@ -53,15 +53,12 @@ def addOpcao():
     db.session.commit()
     
     return redirect(url_for('cozinha.cozinha_home'))
-
-""" @cozinha_bp('/ListarOpcoes')
-@login_required
-def listarOpcoes():
-    if current_user.tipo == 'funcionario':
-        return redirect(url_for('cardapio.cardapio_home')) """
     
 @cozinha_bp.route('/listarOpcoes/<int:cardapio_id>')
 def listar_opcoes(cardapio_id):
+    if current_user.tipo == 'funcionario':
+        return redirect(url_for('cardapio.cardapio_home'))
+    
     cardapio = Cardapio.query.get_or_404(cardapio_id)
 
     # cria um dicionário com as categorias
