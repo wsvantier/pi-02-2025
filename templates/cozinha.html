@@ -12,18 +12,19 @@ Cozinha <br>
 
     <div id="addDia">
         <h3> Adicionar Cardapio (dia)</h3>
-        <form action="" method="post">
-            <input type="date" name="dataForm" id="dataForm">
+        <form action="/cozinha/add_dia" method="post">
+            <input type="date" name="dataForm" id="dataForm" required>
             <input type="submit" value="Adicionar">
         </form>
         <h3>Adicionar Opções ao Cardapio</h3>
-        <form action="" method="post">
+        <form action="/cozinha/addOpcao" method="post">
 
-            Dia: <select name="diaSelect" id="diaSelect">
+            Dia: <select name="diaSelect" class="diaSelect" required>
                 <option value="" selected disabled>-- Selecione --</option>
+                <!-- os dados serão preenchidos via JS -->
             </select><br>
-            Descrição: <input type="text" name="descForm" id="descForm"><br>
-            Categoria: <select name="catSelect" id="catSelect">
+            Descrição: <input type="text" name="descForm" id="descForm" required><br>
+            Categoria: <select name="catSelect" id="catSelect" required>
                 <option value="" selected disabled>-- Selecione --</option>
                 <option value="mistura">Mistura</option>
                 <option value="bebida">Bebida</option>
@@ -36,8 +37,9 @@ Cozinha <br>
         <h3> Cardapio do Dia</h3>
         <form action="" method="post">
            Selecione o dia do Cardapio: 
-            <select name="diaSelect" id="diaSelect">
+            <select name="ListarSelect" class="diaSelect">
                 <option value="" selected disabled>-- Selecione --</option>
+            <!-- os dados serão preenchidos via JS -->
             </select><br>
         </form>
         <table>

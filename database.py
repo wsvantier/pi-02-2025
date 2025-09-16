@@ -19,7 +19,7 @@ class Usuario(UserMixin, db.Model):
     
 class Cardapio(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    data = db.Column(db.Date, nullable=False)
+    data = db.Column(db.Date, nullable=False, unique = True)
     opcoes = db.relationship('Opcao', backref='cardapio', lazy=True)
 
 class Opcao(db.Model):
