@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block titulo %} Pedidos {% endblock %}
+
+{% block corpo %}
+<h1>Pedidos de Todos os Usuários</h1>
+
+<a href="{{url_for('auth.logout')}}">Sair</a>
+
+<div id="filtrarPedidos">
+    <label for="diaSelect">Escolha o dia:</label>
+    <select id="diaSelect">
+        <option value="" disabled selected>-- Selecione o dia --</option>
+        {% for dia in dias %}
+            <option value="{{ dia.id }}">{{ dia.data.strftime('%d/%m/%Y') }}</option>
+        {% endfor %}
+    </select>
+    <button onclick="carregarPedidos()">Atualizar</button>
+</div>
+
+<table border="1" id="tabelaPedidosTodos">
+    <thead>
+        <tr>
+            <th>Usuário</th>
+            <th>Mistura</th>
+            <th>Bebida</th>
+            <th>Sobremesa</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- preenchido pelo JS -->
+    </tbody>
+</table>
+
+<script>
+async function carregarPedidos() {
+    let select = document.getElementById("diaSelect");
+    let cardapioId = select.value;
+    if (!cardapioId) return;
+
+    let resposta = await fetch(`/cozinha/api/pedidos/${cardapioId}`);
+    let pedidos = await resposta.json();
+
+    let tbody = document.querySelector("#tabelaPedidosTodos tbody");
+    tbody.innerHTML = "";
+
+    pedidos.forEach(p => {
+        let linha = document.createElement("tr");
+        linha.innerHTML = `
+            <td>${p.usuario}</td>
+            <td>${p.mistura}</td>
+            <td>${p.bebida}</td>
+            <td>${p.sobremesa}</td>
+        `;
+        tbody.appendChild(linha);
+    });
+}
+
+// Atualiza tabela automaticamente ao mudar o select
+document.getElementById("diaSelect").addEventListener("change", carregarPedidos);
+</script>
+
+{% endblock %}

@@ -88,3 +88,43 @@ def excluir_opcao(id):
     db.session.commit()
 
     return redirect(url_for('cozinha.cozinha_home'))
+
+
+
+from database import Pedido, PedidoItem, Usuario
+
+@cozinha_bp.route('/pedidos')
+@login_required
+def pedidos():
+    if current_user.tipo == 'funcionario':
+        return redirect(url_for('cardapio.cardapio_home'))
+    # Lista todos os dias disponíveis
+    dias = Cardapio.query.order_by(Cardapio.data.asc()).all()
+    return render_template('pedidos.html', dias=dias)
+
+@cozinha_bp.route('/api/pedidos/<int:cardapio_id>')
+@login_required
+def api_pedidos(cardapio_id):
+    if current_user.tipo == 'funcionario':
+        return redirect(url_for('cardapio.cardapio_home'))
+
+    pedidos = (Pedido.query
+               .filter_by(cardapio_id=cardapio_id)
+               .join(Usuario)
+               .all())
+
+    resultado = []
+
+    for p in pedidos:
+        item_mistura = next((i.opcao.descricao for i in p.itens if i.opcao.categoria=='mistura'), "")
+        item_bebida = next((i.opcao.descricao for i in p.itens if i.opcao.categoria=='bebida'), "")
+        item_sobremesa = next((i.opcao.descricao for i in p.itens if i.opcao.categoria=='sobremesa'), "")
+
+        resultado.append({
+            'usuario': p.usuario.nome,
+            'mistura': item_mistura,
+            'bebida': item_bebida,
+            'sobremesa': item_sobremesa
+        })
+
+    return jsonify(resultado)
