@@ -14,33 +14,66 @@ Cardapio <br>
     <form action="">
         <table>
             <thead>
-                <th>Dia</th>
-                <th>Mistura</th>
-                <th>Bebida</th>
-                <th>Sobremesa</th>
-            </thead>
-            <tbody>
                 <tr>
-
-                    <td></td>
-                    <td><select name="mistForm" id="mistForm">
-                            <option value="" selected disabled>-- Selecione --</option>
-                            </option>
-                        </select></td>
-                    <td><select name="bebForm" id="bebForm">
-                            <option value="" selected disabled>-- Selecione --</option>
-                            </option>
-                        </select></td>
-                    <td><select name="sobreForm" id="sobreForm">
-                            <option value="" selected disabled>-- Selecione --</option>
-                            </option>
-                        </select></td>
+                    <th>Dia</th>
+                    <th>Mistura</th>
+                    <th>Bebida</th>
+                    <th>Sobremesa</th>
                 </tr>
+            </thead>
+            <tbody id="tabelaCardapio">
+                <!-- preenchido via JS -->
             </tbody>
         </table>
         <input type="submit" value="Fazer Pedido">
     </form>
 
 </div>
+
+<script>
+async function carregarCardapio() {
+    let resposta = await fetch("{{ url_for('cardapio.proximos') }}");
+    let dados = await resposta.json();
+
+    let tbody = document.getElementById("tabelaCardapio");
+    tbody.innerHTML = "";
+
+    dados.forEach(c => {
+        let linha = document.createElement("tr");
+
+        let misturas = `<select name="mistura_${c.data}">
+                          <option value="" selected disabled>-- Selecione --</option>`;
+        let bebidas = `<select name="bebida_${c.data}">
+                          <option value="" selected disabled>-- Selecione --</option>`;
+        let sobremesas = `<select name="sobremesa_${c.data}">
+                          <option value="" selected disabled>-- Selecione --</option>`;
+
+        c.opcoes.forEach(o => {
+            if (o.categoria === "mistura") {
+                misturas += `<option value="${o.id}">${o.descricao}</option>`;
+            } else if (o.categoria === "bebida") {
+                bebidas += `<option value="${o.id}">${o.descricao}</option>`;
+            } else if (o.categoria === "sobremesa") {
+                sobremesas += `<option value="${o.id}">${o.descricao}</option>`;
+            }
+        });
+
+        misturas += "</select>";
+        bebidas += "</select>";
+        sobremesas += "</select>";
+
+        linha.innerHTML = `
+            <td>${c.data}</td>
+            <td>${misturas}</td>
+            <td>${bebidas}</td>
+            <td>${sobremesas}</td>
+        `;
+
+        tbody.appendChild(linha);
+    });
+}
+
+carregarCardapio();
+</script>
 
 {% endblock %}
