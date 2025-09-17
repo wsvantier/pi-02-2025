@@ -13,21 +13,20 @@ async function carregarCardapio(urlApiCardapio, urlApiPedidos) {
 
     const hoje = new Date();
 
-    // tabela de novos pedidos (próximos 5 dias)
+    // tabela de novos pedidos
     cardapios.forEach(c => {
         let linha = document.createElement("tr");
-
         let dataStr = c.data;
         let dataParts = dataStr.split("/");
         let dataCardapio = new Date(dataParts[2], dataParts[1]-1, dataParts[0]);
 
-        // Cria selects para novos pedidos
+        // Cria selects
         let misturas = `<select name="mistura_${dataStr}">
-                          <option value="" selected disabled>-- Selecione --</option>`;
+                          <option value="" disabled>-- Selecione --</option>`;
         let bebidas = `<select name="bebida_${dataStr}">
-                          <option value="" selected disabled>-- Selecione --</option>`;
+                          <option value="" disabled>-- Selecione --</option>`;
         let sobremesas = `<select name="sobremesa_${dataStr}">
-                          <option value="" selected disabled>-- Selecione --</option>`;
+                          <option value="" disabled>-- Selecione --</option>`;
 
         c.opcoes.forEach(o => {
             let selected = "";
@@ -52,7 +51,7 @@ async function carregarCardapio(urlApiCardapio, urlApiPedidos) {
             <td>${sobremesas}</td>
         `;
 
-        // Desabilitar selects se data do cardápio já passou ou é hoje
+        // Desabilita selects se data passada ou hoje
         if ((dataCardapio - hoje)/(1000*60*60*24) < 1) {
             linha.querySelectorAll("select").forEach(sel => sel.disabled = true);
         }
@@ -66,7 +65,6 @@ async function carregarCardapio(urlApiCardapio, urlApiPedidos) {
         let dataParts = dataStr.split("/");
         let dataCardapio = new Date(dataParts[2], dataParts[1]-1, dataParts[0]);
 
-        // só exibe se data do cardápio for maior que hoje
         if ((dataCardapio - hoje)/(1000*60*60*24) < 1) continue;
 
         let linha = document.createElement("tr");
@@ -75,7 +73,8 @@ async function carregarCardapio(urlApiCardapio, urlApiPedidos) {
         let bebida = p.bebida ? p.bebida.descricao : "";
         let sobremesa = p.sobremesa ? p.sobremesa.descricao : "";
 
-        let acao = `<button onclick="editarPedido('${dataStr}')">Alterar</button>`;
+        // botão Alterar passa também os IDs das opções
+        let acao = `<button onclick="editarPedido('${dataStr}', ${p.mistura ? p.mistura.id : null}, ${p.bebida ? p.bebida.id : null}, ${p.sobremesa ? p.sobremesa.id : null})">Alterar</button>`;
 
         linha.innerHTML = `
             <td>${dataStr}</td>
@@ -89,13 +88,21 @@ async function carregarCardapio(urlApiCardapio, urlApiPedidos) {
     }
 }
 
-function editarPedido(dataStr) {
+// agora a função preenche os selects da tabela superior
+function editarPedido(dataStr, idMistura, idBebida, idSobremesa) {
     let tbody = document.getElementById("tabelaCardapio");
     let linhas = tbody.querySelectorAll("tr");
+
     linhas.forEach(tr => {
         if (tr.children[0].textContent === dataStr) {
             tr.scrollIntoView({behavior: "smooth", block: "center"});
-            tr.querySelectorAll("select").forEach(sel => sel.focus());
+            let selects = tr.querySelectorAll("select");
+            selects.forEach(sel => {
+                if (sel.name.startsWith("mistura") && idMistura) sel.value = idMistura;
+                if (sel.name.startsWith("bebida") && idBebida) sel.value = idBebida;
+                if (sel.name.startsWith("sobremesa") && idSobremesa) sel.value = idSobremesa;
+                sel.focus();
+            });
         }
     });
 }
