@@ -75,3 +75,16 @@ def listar_opcoes(cardapio_id):
         })
 
     return jsonify(opcoes_por_categoria)
+
+
+@cozinha_bp.route('/deletar_opcao/<int:id>')
+@login_required
+def excluir_opcao(id):
+    if current_user == 'funcionario':
+        return redirect(url_for('cardapio.cardapio_home'))
+    
+    remover_opcao = Opcao.query.get(id)
+    db.session.delete(remover_opcao)
+    db.session.commit()
+
+    return redirect(url_for('cozinha.cozinha_home'))
