@@ -6,12 +6,12 @@
 
 Cardapio <br>
 
-<a href="{{url_for('auth.logout')}}"> Sair </a>
+<a href="{{ url_for('auth.logout') }}"> Sair </a>
 
 <div id="pedido">
 
-    <h2>Pedido da Semana</h2>
-    <form action="">
+    <h2>Pedido da Semana (Fazer pedidos)</h2>
+    <form action="{{ url_for('cardapio.pedido') }}" method="post">
         <table>
             <thead>
                 <tr>
@@ -28,52 +28,28 @@ Cardapio <br>
         <input type="submit" value="Fazer Pedido">
     </form>
 
+    <h2>Pedidos já feitos</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Dia</th>
+                <th>Mistura</th>
+                <th>Bebida</th>
+                <th>Sobremesa</th>
+                <th>Ação</th>
+            </tr>
+        </thead>
+        <tbody id="tabelaPedidosFeitos">
+            <!-- preenchido via JS -->
+        </tbody>
+    </table>
+
 </div>
 
 <script>
-async function carregarCardapio() {
-    let resposta = await fetch("{{ url_for('cardapio.proximos') }}");
-    let dados = await resposta.json();
-
-    let tbody = document.getElementById("tabelaCardapio");
-    tbody.innerHTML = "";
-
-    dados.forEach(c => {
-        let linha = document.createElement("tr");
-
-        let misturas = `<select name="mistura_${c.data}">
-                          <option value="" selected disabled>-- Selecione --</option>`;
-        let bebidas = `<select name="bebida_${c.data}">
-                          <option value="" selected disabled>-- Selecione --</option>`;
-        let sobremesas = `<select name="sobremesa_${c.data}">
-                          <option value="" selected disabled>-- Selecione --</option>`;
-
-        c.opcoes.forEach(o => {
-            if (o.categoria === "mistura") {
-                misturas += `<option value="${o.id}">${o.descricao}</option>`;
-            } else if (o.categoria === "bebida") {
-                bebidas += `<option value="${o.id}">${o.descricao}</option>`;
-            } else if (o.categoria === "sobremesa") {
-                sobremesas += `<option value="${o.id}">${o.descricao}</option>`;
-            }
-        });
-
-        misturas += "</select>";
-        bebidas += "</select>";
-        sobremesas += "</select>";
-
-        linha.innerHTML = `
-            <td>${c.data}</td>
-            <td>${misturas}</td>
-            <td>${bebidas}</td>
-            <td>${sobremesas}</td>
-        `;
-
-        tbody.appendChild(linha);
-    });
-}
-
-carregarCardapio();
+window.urlCardapioApi = "{{ url_for('cardapio.proximos') }}";
+window.urlPedidosApi = "{{ url_for('cardapio.pedidos_usuario') }}";
 </script>
+<script src="{{ url_for('static', filename='js/cardapio.js') }}"></script>
 
 {% endblock %}
