@@ -1,18 +1,19 @@
 {% extends 'base.html' %}
 
-{% block titulo %} Cardapio {% endblock %}
+{% block titulo %} Cardápio {% endblock %}
 
 {% block corpo %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/cardapio.css') }}">
 
-Cardapio <br>
+<h1>Cardápio</h1>
 
-<a href="{{ url_for('auth.logout') }}"> Sair </a>
+<a href="{{url_for('auth.logout')}}">Sair</a>
 
 <div id="pedido">
 
-    <h2>Pedido da Semana (Fazer pedidos)</h2>
-    <form action="{{ url_for('cardapio.pedido') }}" method="post">
-        <table>
+    <h2>Fazer Pedido</h2>
+    <form action="{{ url_for('cardapio.pedido') }}" method="POST">
+        <table border="1">
             <thead>
                 <tr>
                     <th>Dia</th>
@@ -22,33 +23,33 @@ Cardapio <br>
                 </tr>
             </thead>
             <tbody id="tabelaCardapio">
-                <!-- preenchido via JS -->
+                <!-- Preenchido pelo JS -->
             </tbody>
         </table>
         <input type="submit" value="Fazer Pedido">
     </form>
 
-    <h2>Pedidos já feitos</h2>
-    <table>
+    <h2>Pedidos já feitos (futuros)</h2>
+    <table border="1">
         <thead>
             <tr>
                 <th>Dia</th>
                 <th>Mistura</th>
                 <th>Bebida</th>
                 <th>Sobremesa</th>
-                <th>Ação</th>
+                <th>Ações</th>
             </tr>
         </thead>
         <tbody id="tabelaPedidosFeitos">
-            <!-- preenchido via JS -->
+            <!-- Preenchido pelo JS -->
         </tbody>
     </table>
 
 </div>
 
 <script>
-window.urlCardapioApi = "{{ url_for('cardapio.proximos') }}";
-window.urlPedidosApi = "{{ url_for('cardapio.pedidos_usuario') }}";
+    window.urlCardapioApi = "{{ url_for('cardapio.proximos') }}";
+    window.urlPedidosApi = "{{ url_for('cardapio.pedidos_usuario') }}";  // rota que retorna os pedidos do usuário em JSON
 </script>
 <script src="{{ url_for('static', filename='js/cardapio.js') }}"></script>
 

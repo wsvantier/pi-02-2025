@@ -1,4 +1,4 @@
-from flask import Blueprint, flash, redirect, render_template, jsonify, request, url_for
+from flask import Blueprint, abort, flash, redirect, render_template, jsonify, request, url_for
 from flask_login import login_required
 from database import db, Pedido, PedidoItem, Cardapio, Opcao
 from datetime import date, datetime, timedelta
@@ -125,3 +125,22 @@ def pedidos_usuario():
         }
     
     return jsonify(resultado)
+
+@cardapio_bp.route('/excluir_pedido/<data_str>', methods=['DELETE'])
+@login_required
+def excluir_pedido(data_str):
+    try:
+        data = datetime.strptime(data_str, "%d/%m/%Y").date()
+    except ValueError:
+        abort(400, "Data inválida")
+
+    pedido = Pedido.query.filter_by(usuario_id=current_user.id, cardapio_id=Cardapio.query.filter_by(data=data).first().id).first()
+
+    if not pedido:
+        abort(404, "Pedido não encontrado")
+
+    # Deleta todos os itens do pedido
+    PedidoItem.query.filter_by(pedido_id=pedido.id).delete()
+    db.session.delete(pedido)
+    db.session.commit()
+    return '', 200
