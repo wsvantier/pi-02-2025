@@ -1,30 +1,40 @@
-async function carregarPedidos() {
-    let select = document.getElementById("diaSelect");
-    let cardapioId = select.value;
-    if (!cardapioId) return;
+document.addEventListener("DOMContentLoaded", () => {
 
-    let resposta = await fetch(`/cozinha/api/pedidos/${cardapioId}`);
-    let pedidos = await resposta.json();
+    const select = document.getElementById("diaSelect");
+    const tbody = document.querySelector("#tabelaPedidosTodos tbody");
+    const btnAtualizar = document.getElementById("btnAtualizar");
 
-    let tbody = document.querySelector("#tabelaPedidosTodos tbody");
-    tbody.innerHTML = "";
+    if (!select || !tbody) return;
 
-    pedidos.forEach((p, index) => {
-        let linha = document.createElement("tr");
+    async function carregarPedidos() {
+        const cardapioId = select.value;
+        if (!cardapioId) return;
 
-        // adiciona classe de zebra alternada
-        if (index % 2 === 0) linha.style.backgroundColor = "#f2f2f2";
-        else linha.style.backgroundColor = "#ffffff";
+        try {
+            const resp = await fetch(`/cozinha/api/pedidos/${cardapioId}`);
+            const pedidos = await resp.json();
 
-        linha.innerHTML = `
-            <td>${p.usuario}</td>
-            <td>${p.mistura}</td>
-            <td>${p.bebida}</td>
-            <td>${p.sobremesa}</td>
-        `;
-        tbody.appendChild(linha);
-    });
-}
+            tbody.innerHTML = "";
 
-// Atualiza tabela automaticamente ao mudar o select
-document.getElementById("diaSelect").addEventListener("change", carregarPedidos);
+            pedidos.forEach((p, index) => {
+                const linha = document.createElement("tr");
+                linha.style.backgroundColor = index % 2 === 0 ? "#f2f2f2" : "#ffffff";
+
+                linha.innerHTML = `
+                    <td>${p.usuario}</td>
+                    <td>${p.mistura}</td>
+                    <td>${p.bebida}</td>
+                    <td>${p.sobremesa}</td>
+                `;
+                tbody.appendChild(linha);
+            });
+
+        } catch (err) {
+            console.error("Erro ao carregar pedidos:", err);
+            alert("Erro ao carregar pedidos. Veja o console.");
+        }
+    }
+
+    select.addEventListener("change", carregarPedidos);
+    btnAtualizar.addEventListener("click", carregarPedidos);
+});

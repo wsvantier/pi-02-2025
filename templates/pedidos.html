@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 
-{% block titulo %} Pedidos {% endblock %}
+{% block titulo %}Pedidos{% endblock %}
 
 {% block corpo %}
 <h1>Pedidos de Todos os Usuários</h1>
 
-<a href="{{url_for('auth.logout')}}">Sair</a>
+<a href="{{ url_for('auth.logout') }}">Sair</a>
 
 <div id="filtrarPedidos">
     <label for="diaSelect">Escolha o dia:</label>
@@ -15,7 +15,7 @@
             <option value="{{ dia.id }}">{{ dia.data.strftime('%d/%m/%Y') }}</option>
         {% endfor %}
     </select>
-    <button onclick="carregarPedidos()">Atualizar</button>
+    <button type="button" id="btnAtualizar">Atualizar</button>
 </div>
 
 <table border="1" id="tabelaPedidosTodos">

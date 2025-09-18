@@ -1,18 +1,16 @@
 {% extends 'base.html' %}
 
-{% block titulo %} Cardápio {% endblock %}
+{% block titulo %}Cardápio{% endblock %}
 
 {% block corpo %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/cardapio.css') }}">
 
 <h1>Cardápio</h1>
-
-<a href="{{url_for('auth.logout')}}">Sair</a>
+<a href="{{ url_for('auth.logout') }}">Sair</a>
 
 <div id="pedido">
-
     <h2>Fazer Pedido</h2>
-    <form action="{{ url_for('cardapio.pedido') }}" method="POST">
+    <form id="formPedido">
         <table border="1">
             <thead>
                 <tr>
@@ -22,9 +20,7 @@
                     <th>Sobremesa</th>
                 </tr>
             </thead>
-            <tbody id="tabelaCardapio">
-                <!-- Preenchido pelo JS -->
-            </tbody>
+            <tbody id="tabelaCardapio"></tbody>
         </table>
         <input type="submit" value="Fazer Pedido">
     </form>
@@ -40,17 +36,14 @@
                 <th>Ações</th>
             </tr>
         </thead>
-        <tbody id="tabelaPedidosFeitos">
-            <!-- Preenchido pelo JS -->
-        </tbody>
+        <tbody id="tabelaPedidosFeitos"></tbody>
     </table>
-
 </div>
 
 <script>
     window.urlCardapioApi = "{{ url_for('cardapio.proximos') }}";
-    window.urlPedidosApi = "{{ url_for('cardapio.pedidos_usuario') }}";  // rota que retorna os pedidos do usuário em JSON
+    window.urlPedidosApi = "{{ url_for('cardapio.pedidos_usuario') }}";
+    window.urlPedidoPost = "{{ url_for('cardapio.adicionar_pedido') }}";
 </script>
 <script src="{{ url_for('static', filename='js/cardapio.js') }}"></script>
-
 {% endblock %}
