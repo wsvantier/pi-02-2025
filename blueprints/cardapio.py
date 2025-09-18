@@ -1,10 +1,11 @@
-from flask import Blueprint, abort, jsonify, request, render_template
+from flask import Blueprint, render_template, jsonify, request
 from flask_login import login_required, current_user
-from database import db, Pedido, PedidoItem, Cardapio, Opcao
+from database import db, Cardapio, Opcao, Pedido, PedidoItem
 from datetime import date, datetime, timedelta
 
 cardapio_bp = Blueprint('cardapio', __name__, url_prefix='/cardapio')
 
+# Página principal do cardápio
 @cardapio_bp.route('/')
 @login_required
 def cardapio_home():
@@ -16,7 +17,7 @@ def cardapio_home():
 def proximos():
     hoje = date.today()
     limite = hoje + timedelta(days=5)
-    cardapios = Cardapio.query.filter(Cardapio.data >= hoje, Cardapio.data <= limite).order_by(Cardapio.data.asc()).all()
+    cardapios = Cardapio.query.filter(Cardapio.data>=hoje, Cardapio.data<=limite).order_by(Cardapio.data.asc()).all()
     resultado = []
     for c in cardapios:
         resultado.append({
@@ -29,16 +30,13 @@ def proximos():
 @cardapio_bp.route('/api/pedidos_usuario')
 @login_required
 def pedidos_usuario():
-    pedidos = PedidoItem.query.join(Pedido).join(Opcao).filter(Pedido.usuario_id == current_user.id).all()
+    pedidos = PedidoItem.query.join(Pedido).join(Opcao).filter(Pedido.usuario_id==current_user.id).all()
     resultado = {}
     for item in pedidos:
         data_str = item.pedido.cardapio.data.strftime("%d/%m/%Y")
         if data_str not in resultado:
             resultado[data_str] = {}
-        resultado[data_str][item.opcao.categoria] = {
-            "id": item.opcao.id,
-            "descricao": item.opcao.descricao
-        }
+        resultado[data_str][item.opcao.categoria] = {"id":item.opcao.id,"descricao":item.opcao.descricao}
     return jsonify(resultado)
 
 # API: adicionar/atualizar pedido
@@ -47,25 +45,25 @@ def pedidos_usuario():
 def adicionar_pedido():
     dados = request.get_json()
     if not dados:
-        return jsonify({"erro": "Nenhum dado recebido"}), 400
+        return jsonify({"erro":"Nenhum dado recebido"}), 400
 
     try:
         for campo, valor in dados.items():
-            if not valor:
-                continue
-            categoria, data_str = campo.split("_", 1)
-            data = datetime.strptime(data_str, "%d/%m/%Y").date()
+            if not valor: continue
+            categoria, data_str = campo.split("_",1)
+            data = datetime.strptime(data_str,"%d/%m/%Y").date()
             cardapio = Cardapio.query.filter_by(data=data).first()
-            if not cardapio:
-                continue
+            if not cardapio: continue
 
             pedido = Pedido.query.filter_by(usuario_id=current_user.id, cardapio_id=cardapio.id).first()
             if not pedido:
-                pedido = Pedido(usuario_id=current_user.id, cardapio_id=cardapio.id, status="pendente", data_pedido=date.today())
+                pedido = Pedido(usuario_id=current_user.id, cardapio_id=cardapio.id,
+                                status="pendente", data_pedido=date.today())
                 db.session.add(pedido)
                 db.session.flush()
 
-            item = PedidoItem.query.join(Opcao).filter(PedidoItem.pedido_id == pedido.id, Opcao.categoria == categoria).first()
+            item = PedidoItem.query.join(Opcao).filter(PedidoItem.pedido_id==pedido.id,
+                                                       Opcao.categoria==categoria).first()
             if item:
                 item.opcao_id = int(valor)
             else:
@@ -77,23 +75,31 @@ def adicionar_pedido():
         db.session.rollback()
         return jsonify({"erro": str(e)}), 500
 
-# API: excluir pedido
-@cardapio_bp.route('/excluir_pedido/<data_str>', methods=['DELETE'])
+# API: excluir pedido (mantendo apenas uma função)
+@cardapio_bp.route('/excluir_pedido/<path:data_str>', methods=['DELETE'])
 @login_required
 def excluir_pedido(data_str):
     try:
+        # Converte string para data
         data = datetime.strptime(data_str, "%d/%m/%Y").date()
+
+        # Busca cardápio do dia
         cardapio = Cardapio.query.filter_by(data=data).first()
         if not cardapio:
             return jsonify({"erro": "Cardápio não encontrado"}), 404
+
+        # Busca pedido do usuário
         pedido = Pedido.query.filter_by(usuario_id=current_user.id, cardapio_id=cardapio.id).first()
         if not pedido:
             return jsonify({"erro": "Pedido não encontrado"}), 404
 
+        # Remove itens e pedido
         PedidoItem.query.filter_by(pedido_id=pedido.id).delete()
         db.session.delete(pedido)
         db.session.commit()
+
         return jsonify({"sucesso": True})
+
     except Exception as e:
         db.session.rollback()
         return jsonify({"erro": str(e)}), 500
