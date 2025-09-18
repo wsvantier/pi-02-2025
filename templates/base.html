@@ -7,7 +7,21 @@
     <link rel="stylesheet" href="{{url_for('static', filename = 'style.css')}}">
 </head>
 <body>
-
+<nav>
+    <ul>
+        {% if current_user.tipo == 'admin' %}
+            <li> <a href="{{url_for('admin.admin_home')}}">  Admin  </a>
+            <li> <a href="{{url_for('cozinha.cozinha_home')}}">  Cozinha  </a>
+            <li> <a href="{{url_for('cardapio.cardapio_home')}}">  Cardapio  </a>
+        {% elif current_user.tipo == 'cozinha'  %}
+            <li> <a href="{{url_for('cozinha.cozinha_home')}}">  Cozinha  </a>
+            <li> <a href="{{url_for('cardapio.cardapio_home')}}">  Cardapio  </a>
+        {% else %}
+            <li> <a href="{{url_for('cardapio.cardapio_home')}}">  Cardapio  </a>
+        {% endif %}
+        
+    </ul>
+</nav>
     {% block corpo %}
 
     {% endblock %}
