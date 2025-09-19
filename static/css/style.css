@@ -1,0 +1,167 @@
+/* ===== Reset básico ===== */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+/* ===== Body ===== */
+body {
+    background: #f5f5f5;
+    color: #333;
+}
+
+/* ===== Navegação ===== */
+nav {
+    background-color: #1e3c72;
+}
+
+nav ul {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+nav ul li {
+    position: relative;
+}
+
+nav ul li a {
+    display: block;
+    padding: 15px 20px;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background 0.3s;
+}
+
+nav ul li a:hover {
+    background-color: #2a5298;
+}
+
+/* Logout à direita */
+nav ul li#sair {
+    margin-left: auto;
+}
+
+/* Submenu */
+nav ul li ul {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: #2a5298;
+    list-style: none;
+    min-width: 150px;
+    border-radius: 6px;
+    overflow: hidden;
+    z-index: 1000;
+}
+
+nav ul li ul li a {
+    padding: 10px 15px;
+}
+
+nav ul li:hover ul {
+    display: block;
+}
+
+/* ===== Container Flex ===== */
+div.container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 0 10px;
+}
+
+/* ===== Formulários ===== */
+div#cadUser, div#addDia, div#pedido, div#listOpc {
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+}
+
+div#cadUser {
+    flex: 1 1 30%;
+    text-align: left;
+}
+
+div#addDia, div#pedido {
+    flex: 1 1 50%;
+}
+
+div#listUser {
+    flex: 1 1 70%;
+}
+
+input, select, button {
+    margin: 5px 0;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    width: 100%;
+}
+
+input:focus, select:focus {
+    border-color: #1e3c72;
+    outline: none;
+}
+
+button {
+    background-color: #1e3c72;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+button:hover {
+    background-color: #2a5298;
+}
+
+/* ===== Tabelas ===== */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+th, td {
+    padding: 12px;
+    text-align: center;
+    border: 1px solid #ccc;
+}
+
+th {
+    background-color: #1e3c72;
+    color: #fff;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+/* ===== Ajustes específicos ===== */
+div#pedido form, div#listUser {
+    text-align: left;
+}
+
+div#listUser h3 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+/* ===== Responsividade ===== */
+@media (max-width: 900px) {
+    div.container {
+        flex-direction: column;
+    }
+}

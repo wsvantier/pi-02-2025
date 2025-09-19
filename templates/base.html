@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block titulo %} {% endblock %}</title>
-    <link rel="stylesheet" href="{{url_for('static', filename = 'style.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename = 'css/style.css')}}">
 </head>
 
 <body>
@@ -13,34 +13,33 @@
         <ul>
             {% if current_user.tipo == 'admin' %}
             <li> <a href="{{url_for('admin.admin_home')}}"> Admin </a></li>
-            <li> <a href="{{url_for('cozinha.cozinha_home')}}"> Cozinha </a>
+            <li class='drop'> <a href="{{url_for('cozinha.cozinha_home')}}"> Cozinha </a>
 
-                <ul>
+                <ul class="drop-cont">
                     <li><a href="{{url_for('cozinha.pedidos')}}">Pedidos</a></li>
                 </ul>
 
             </li>
-            <li> <a href="{{url_for('cardapio.cardapio_home')}}"> Cardapio </a></li>
             {% elif current_user.tipo == 'cozinha' %}
-            <li> <a href="{{url_for('cozinha.cozinha_home')}}"> Cozinha </a>
+            <li class='drop'> <a href="{{url_for('cozinha.cozinha_home')}}"> Cozinha </a>
 
                 <ul>
                     <li><a href="{{url_for('cozinha.pedidos')}}">Pedidos</a></li>
                 </ul>
 
             </li>
-            <li> <a href="{{url_for('cardapio.cardapio_home')}}"> Cardapio </a></li>
-            {% else %}
-            <li> <a href="{{url_for('cardapio.cardapio_home')}}"> Cardapio </a></li>
             {% endif %}
 
+            <li> <a href="{{url_for('cardapio.cardapio_home')}}"> Cardapio </a></li>
+            <li id="sair"> <a href="{{url_for('auth.logout')}}"> Logout </a></li>
+            
         </ul>
     </nav>
     {% block corpo %}
 
     {% endblock %}
 
-    <script src="{{url_for('static', filename = 'script.js')}}"></script>
+    <script src="{{url_for('static', filename = 'js/script.js')}}"></script>
 </body>
 
 </html>

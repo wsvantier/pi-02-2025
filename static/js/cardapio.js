@@ -19,6 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const hoje = new Date();
             const hojeSemHora = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate());
 
+            // monta tabela do cardápio
             cardapios.forEach(c => {
                 const linha = document.createElement("tr");
                 const dataStr = c.data;
@@ -34,12 +35,18 @@ document.addEventListener("DOMContentLoaded", () => {
                 c.opcoes.forEach(o => {
                     let selected = "";
                     if (pedidosUsuario[dataStr] && pedidosUsuario[dataStr][o.categoria] &&
-                        pedidosUsuario[dataStr][o.categoria].id == o.id) selected = "selected";
+                        pedidosUsuario[dataStr][o.categoria].id == o.id) {
+                        selected = "selected";
+                    }
 
                     if(o.categoria === "mistura") misturas += `<option value="${o.id}" ${selected}>${o.descricao}</option>`;
                     if(o.categoria === "bebida") bebidas += `<option value="${o.id}" ${selected}>${o.descricao}</option>`;
                     if(o.categoria === "sobremesa") sobremesas += `<option value="${o.id}" ${selected}>${o.descricao}</option>`;
                 });
+
+                misturas += "</select>";
+                bebidas += "</select>";
+                sobremesas += "</select>";
 
                 linha.innerHTML = `
                     <td>${dataStr}</td>
@@ -49,18 +56,24 @@ document.addEventListener("DOMContentLoaded", () => {
                 `;
 
                 const diffDias = (dataCardapio - hojeSemHora) / (1000*60*60*24);
-                if(diffDias < 1) linha.querySelectorAll("select").forEach(sel => sel.disabled = true);
+
+                // regra de bloqueio/liberação
+                linha.querySelectorAll("select").forEach(sel => sel.disabled = true);
+
+                if (diffDias >= 1 && !pedidosUsuario[dataStr]) {
+                    linha.querySelectorAll("select").forEach(sel => sel.disabled = false);
+                }
 
                 tabelaCardapio.appendChild(linha);
             });
 
-            // Pedidos já feitos
+            // monta tabela de pedidos já feitos
             for(let dataStr in pedidosUsuario) {
                 const p = pedidosUsuario[dataStr];
                 const [dia, mes, ano] = dataStr.split("/");
                 const dataCardapio = new Date(ano, mes-1, dia);
                 const diffDias = (dataCardapio - hojeSemHora)/(1000*60*60*24);
-                if(diffDias < 1) continue;
+                if(diffDias < 1) continue; // ignora pedidos passados
 
                 const linha = document.createElement("tr");
                 const mistura = p.mistura ? p.mistura.descricao : "";
@@ -87,9 +100,23 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    // libera edição de um pedido já feito
     window.liberarEdicao = function(dataStr, idMistura, idBebida, idSobremesa) {
         const linha = document.getElementById(`linha_${dataStr.replace(/\//g,'_')}`);
         if(!linha) return;
+
+        const hoje = new Date();
+        const hojeSemHora = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate());
+        const [dia, mes, ano] = dataStr.split("/");
+        const dataCardapio = new Date(ano, mes-1, dia);
+
+        const diffDias = (dataCardapio - hojeSemHora) / (1000*60*60*24);
+
+        if (diffDias < 1) {
+            alert("Não é possível alterar pedidos de datas passadas.");
+            return;
+        }
+
         linha.scrollIntoView({behavior:"smooth", block:"center"});
         linha.querySelectorAll("select").forEach(sel => {
             sel.disabled = false;
@@ -99,29 +126,29 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    // excluir pedido
     window.excluirPedido = async function(dataStr) {
-    if(!confirm(`Deseja realmente excluir o pedido do dia ${dataStr}?`)) return;
+        if(!confirm(`Deseja realmente excluir o pedido do dia ${dataStr}?`)) return;
 
-    try {
-        // Encode para evitar problemas com "/"
-        const resp = await fetch(`/cardapio/excluir_pedido/${encodeURIComponent(dataStr)}`, {
-            method: "DELETE"
-        });
+        try {
+            const resp = await fetch(`/cardapio/excluir_pedido/${encodeURIComponent(dataStr)}`, {
+                method: "DELETE"
+            });
 
-        if(resp.ok) {
-            alert("Pedido excluído com sucesso!");
-            location.reload();
-        } else {
-            const json = await resp.json();
-            alert("Erro ao excluir pedido: " + (json.erro || "desconhecido"));
+            if(resp.ok) {
+                alert("Pedido excluído com sucesso!");
+                location.reload();
+            } else {
+                const json = await resp.json();
+                alert("Erro ao excluir pedido: " + (json.erro || "desconhecido"));
+            }
+        } catch(err) {
+            console.error(err);
+            alert("Erro ao excluir pedido. Veja o console.");
         }
-    } catch(err) {
-        console.error(err);
-        alert("Erro ao excluir pedido. Veja o console.");
     }
-}
 
-
+    // submit do form
     form.addEventListener("submit", async e => {
         e.preventDefault();
         const selects = form.querySelectorAll("select");
