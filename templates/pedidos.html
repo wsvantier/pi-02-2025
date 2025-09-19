@@ -3,9 +3,9 @@
 {% block titulo %}Pedidos{% endblock %}
 
 {% block corpo %}
-<h1>Pedidos de Todos os Usuários</h1>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 
-<a href="{{ url_for('auth.logout') }}">Sair</a>
+<h1>Pedidos de Todos os Usuários</h1>
 
 <div id="filtrarPedidos">
     <label for="diaSelect">Escolha o dia:</label>
@@ -25,6 +25,8 @@
             <th>Mistura</th>
             <th>Bebida</th>
             <th>Sobremesa</th>
+            <th>Status</th>
+            <th>Ações</th>
         </tr>
     </thead>
     <tbody>
@@ -32,5 +34,6 @@
     </tbody>
 </table>
 
-<script src="{{ url_for('static', filename='js/pedidos.js') }}"></script>
+
+<script src="{{url_for('static', filename = 'js/pedidos.js')}}"></script>
 {% endblock %}

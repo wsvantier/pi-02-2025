@@ -110,10 +110,29 @@ def api_pedidos(cardapio_id):
         item_sobremesa = next((i.opcao.descricao for i in p.itens if i.opcao.categoria=='sobremesa'), "")
 
         resultado.append({
+            'id': p.id,
             'usuario': p.usuario.nome,
             'mistura': item_mistura,
             'bebida': item_bebida,
-            'sobremesa': item_sobremesa
+            'sobremesa': item_sobremesa,
+            'status': p.status
         })
 
     return jsonify(resultado)
+
+
+@cozinha_bp.route('/pedido/<int:pedido_id>/status', methods=['POST'])
+@login_required
+def atualizar_status(pedido_id):
+    if current_user.tipo == 'funcionario':
+        return jsonify({"erro": "Acesso negado"}), 403
+
+    novo_status = request.json.get("status")
+    if novo_status not in ["pendente", "confirmado", "cancelado"]:
+        return jsonify({"erro": "Status inválido"}), 400
+
+    pedido = Pedido.query.get_or_404(pedido_id)
+    pedido.status = novo_status
+    db.session.commit()
+
+    return jsonify({"sucesso": True, "status": pedido.status})
