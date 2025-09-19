@@ -73,16 +73,28 @@ def listar_opcoes(cardapio_id):
     return jsonify(opcoes_por_categoria)
 
 # Excluir opção
+# Excluir opção
 @cozinha_bp.route('/deletar_opcao/<int:id>')
 @login_required
 def excluir_opcao(id):
     if current_user.tipo == 'funcionario':
         return redirect(url_for('cardapio.cardapio_home'))
-    
+
     remover_opcao = Opcao.query.get_or_404(id)
+
+    # verifica se existe algum pedido_item que usa essa opção
+    usados = PedidoItem.query.filter_by(opcao_id=id).count()
+    if usados > 0:
+        # retorna mensagem simples (sem usar flash)
+        return render_template(
+            "cozinha.html",
+            erro="❌ Não é possível excluir esta opção, pois já foi usada em pedidos."
+        )
+
     db.session.delete(remover_opcao)
     db.session.commit()
     return redirect(url_for('cozinha.cozinha_home'))
+
 
 # Página de pedidos
 @cozinha_bp.route('/pedidos')

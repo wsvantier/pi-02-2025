@@ -4,6 +4,7 @@
 
 {% block corpo %}
 
+
 <div class="container">
 
     <div id="addDia">
@@ -32,10 +33,10 @@
     <div id="listOpc">
         <h3> Cardapio do Dia</h3>
         <form action="" method="post">
-           Selecione o dia do Cardapio: 
+            Selecione o dia do Cardapio:
             <select name="ListarSelect" class="diaSelect">
                 <option value="" selected disabled>-- Selecione --</option>
-            <!-- os dados serão preenchidos via JS -->
+                <!-- os dados serão preenchidos via JS -->
             </select><br>
         </form>
         <table>
@@ -43,6 +44,9 @@
                 <th>Mistura</th>
                 <th>Bebida</th>
                 <th>Sobremesa</th>
+                {% if erro %}
+                <div class="alert alert-danger">{{ erro }}</div>
+                {% endif %}
             </thead>
             <tbody id="cadapio-dia">
 

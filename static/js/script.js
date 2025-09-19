@@ -23,14 +23,23 @@ async function listarDias() {
     const req = await fetch('/cozinha/listarDias');
     const dias = await req.json();
 
+    // pega a data de hoje no formato YYYY-MM-DD
+    const hoje = new Date();
+    const hojeStr = hoje.toISOString().split('T')[0];
+
     // percorre todos os selects com a classe diaSelect
     for (let seletor of elementos) {
-        //seletor.innerHTML = ''; // limpa opções antigas
+        seletor.innerHTML = '<option value="" selected disabled>-- Selecione --</option>'; // limpa opções antigas
+
         dias.forEach(e => {
-            seletor.innerHTML += `<option value="${e.id}">${e.data}</option>`;
+            // só adiciona se a data for futura ou hoje
+            if (e.data >= hojeStr) {
+                seletor.innerHTML += `<option value="${e.id}">${e.data}</option>`;
+            }
         });
     }
 }
+
 
 // dispara ambas quando a página terminar de carregar
 window.addEventListener('DOMContentLoaded', () => {
