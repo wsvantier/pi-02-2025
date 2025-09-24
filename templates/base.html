@@ -9,36 +9,62 @@
 </head>
 
 <body>
-    <nav>
-        <ul>
-            {% if current_user.tipo == 'admin' %}
-            <li> <a href="{{url_for('admin.admin_home')}}"> Admin </a></li>
-            <li class='drop'> <a href="{{url_for('cozinha.cozinha_home')}}"> Cozinha </a>
+   <nav>
+    <ul>
+        {% if current_user.tipo == 'admin' %}
+        <li> <a href="{{url_for('admin.admin_home')}}"> Admin </a></li>
+        <li class='drop'> <a href="{{url_for('cozinha.cozinha_home')}}"> Cozinha </a>
+            <ul class="drop-cont">
+                <li><a href="{{url_for('cozinha.pedidos')}}">Pedidos</a></li>
+            </ul>
+        </li>
+        {% elif current_user.tipo == 'cozinha' %}
+        <li class='drop'> <a href="{{url_for('cozinha.cozinha_home')}}"> Cozinha </a>
+            <ul>
+                <li><a href="{{url_for('cozinha.pedidos')}}">Pedidos</a></li>
+            </ul>
+        </li>
+        {% endif %}
+        
+        <li> <a href="{{url_for('cardapio.cardapio_home')}}"> Cardápio </a></li>
+        
+        <!-- Agrupa os botões de acessibilidade num único li -->
+        <li class="acessibilidade-container">
+            <button onclick="aumentarFonte()">A+</button>
+            <button onclick="diminuirFonte()">A-</button>
+            <button onclick="toggleContraste()">Contraste</button>
+        </li>
 
-                <ul class="drop-cont">
-                    <li><a href="{{url_for('cozinha.pedidos')}}">Pedidos</a></li>
-                </ul>
+        <li id="sair"> <a href="{{url_for('auth.logout')}}"> Logout </a></li>
+    </ul>
+</nav>
 
-            </li>
-            {% elif current_user.tipo == 'cozinha' %}
-            <li class='drop'> <a href="{{url_for('cozinha.cozinha_home')}}"> Cozinha </a>
+    
+    
 
-                <ul>
-                    <li><a href="{{url_for('cozinha.pedidos')}}">Pedidos</a></li>
-                </ul>
-
-            </li>
-            {% endif %}
-
-            <li> <a href="{{url_for('cardapio.cardapio_home')}}"> Cardapio </a></li>
-            <li id="sair"> <a href="{{url_for('auth.logout')}}"> Logout </a></li>
-            
-        </ul>
-    </nav>
     {% block corpo %}
-
     {% endblock %}
 
+    <script>
+        let tamanhoFonte = 20;
+
+function aumentarFonte() {
+    tamanhoFonte += 2;
+    document.body.style.fontSize = tamanhoFonte + 'px';
+}
+
+function diminuirFonte() {
+    if (tamanhoFonte > 10) {
+        tamanhoFonte -= 2;
+        document.body.style.fontSize = tamanhoFonte + 'px';
+    }
+}
+
+function toggleContraste() {
+    document.body.classList.toggle('contraste');
+}
+
+    </script>
     <script src="{{url_for('static', filename = 'js/script.js')}}"></script>
 </body>
 

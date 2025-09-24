@@ -6,10 +6,17 @@
     font-family: Arial, sans-serif;
 }
 
+/* Permitir herança da fonte */
+body, body * {
+    font-size: 1em;
+}
+
 /* ===== Body ===== */
 body {
-    background: #f5f5f5;
-    color: #333;
+    font-size: 1em; /* Tamanho base (16px padrão navegador) */
+    background-color: white;
+    color: black;
+    transition: all 0.3s ease;
 }
 
 /* ===== Navegação ===== */
@@ -30,7 +37,7 @@ nav ul li {
 
 nav ul li a {
     display: block;
-    padding: 15px 20px;
+    padding: 0.9375em 1.25em; /* 15px 20px */
     color: #fff;
     text-decoration: none;
     border-radius: 5px;
@@ -61,7 +68,7 @@ nav ul li ul {
 }
 
 nav ul li ul li a {
-    padding: 10px 15px;
+    padding: 0.625em 0.9375em; /* 10px 15px */
 }
 
 nav ul li:hover ul {
@@ -81,7 +88,7 @@ div.container {
 /* ===== Formulários ===== */
 div#cadUser, div#addDia, div#pedido, div#listOpc {
     background: #fff;
-    padding: 20px;
+    padding: 1.25em; /* 20px */
     border-radius: 12px;
     box-shadow: 0 6px 15px rgba(0,0,0,0.1);
 }
@@ -100,11 +107,11 @@ div#listUser {
 }
 
 input, select, button {
-    margin: 5px 0;
-    padding: 10px;
+    margin: 0.3125em 0; /* 5px */
+    padding: 0.625em;   /* 10px */
     border-radius: 6px;
     border: 1px solid #ccc;
-    font-size: 14px;
+    font-size: 1em;
     width: 100%;
 }
 
@@ -133,7 +140,7 @@ table {
 }
 
 th, td {
-    padding: 12px;
+    padding: 0.75em; /* 12px */
     text-align: center;
     border: 1px solid #ccc;
 }
@@ -164,4 +171,88 @@ div#listUser h3 {
     div.container {
         flex-direction: column;
     }
+}
+
+/* ===== Acessibilidade ===== */
+
+/* Botões de acessibilidade */
+.acessibilidade-buttons {
+    padding: 10px;
+    margin: 15px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.acessibilidade-buttons button {
+    padding: 0.5em 0.75em; /* 8px 12px */
+    font-size: 1em;
+    cursor: pointer;
+    border-radius: 6px;
+    border: 1px solid #1e3c72;
+    background-color: #1e3c72;
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+.acessibilidade-buttons button:hover,
+.acessibilidade-buttons button:focus {
+    background-color: #2a5298;
+    outline: none;
+}
+
+/* ===== Modo alto contraste ===== */
+.contraste {
+    background-color: #121212;  /* preto suave */
+    color: #FFD60A;             /* amarelo dourado */
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.contraste a {
+    color: #FFD60A;
+    text-decoration: underline;
+}
+
+.contraste th, .contraste td {
+    border-color: #FFD60A;
+}
+
+
+
+nav ul {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 10px; /* espaço entre itens do menu */
+}
+
+/* Faz os botões ficarem lado a lado e centralizados */
+.acessibilidade-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-grow: 0; /* para ocupar espaço e centralizar os botões */
+}
+
+/* Estilize os botões */
+.acessibilidade-container button {
+    padding: 8px 12px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 6px;
+    border: none;
+    background-color: #2a5298;
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+.acessibilidade-container button:hover {
+    background-color: #1e3c72;
+}
+
+/* Ajusta o item de logout para não crescer e ficar na ponta direita */
+nav ul li#sair {
+    margin-left: auto;
 }

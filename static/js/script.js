@@ -108,4 +108,3 @@ document.querySelector('.diaSelect:last-of-type').addEventListener('change', fun
     listarOpcoesDoDia(cardapio_id);
 });
 
-
