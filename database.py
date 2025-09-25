@@ -30,12 +30,20 @@ class Opcao(db.Model):
     
 class Pedido(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    usuario_id = db.Column(db.Integer, db.ForeignKey('usuario.id'), nullable=False)
+    usuario_id = db.Column(
+        db.Integer,
+        db.ForeignKey('usuario.id', ondelete="SET NULL"),  # 🔹 Aqui
+        nullable=True
+    )
     cardapio_id = db.Column(db.Integer, db.ForeignKey('cardapio.id'), nullable=False)
     status = db.Column(db.Enum('pendente','confirmado','cancelado'), nullable=False)
     data_pedido = db.Column(db.Date, nullable=False)
-    
-    usuario = db.relationship('Usuario', backref='pedidos', lazy=True)
+
+    usuario = db.relationship(
+        'Usuario',
+        backref=db.backref('pedidos', passive_deletes=True),  # 🔹 Aqui
+        lazy=True
+    )
     cardapio = db.relationship('Cardapio', backref='pedidos', lazy=True)
 
 class PedidoItem(db.Model):
