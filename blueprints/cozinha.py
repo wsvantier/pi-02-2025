@@ -73,7 +73,6 @@ def listar_opcoes(cardapio_id):
     return jsonify(opcoes_por_categoria)
 
 # Excluir opção
-# Excluir opção
 @cozinha_bp.route('/deletar_opcao/<int:id>')
 @login_required
 def excluir_opcao(id):
@@ -94,7 +93,6 @@ def excluir_opcao(id):
     db.session.delete(remover_opcao)
     db.session.commit()
     return redirect(url_for('cozinha.cozinha_home'))
-
 
 # Página de pedidos
 @cozinha_bp.route('/pedidos')
@@ -123,7 +121,8 @@ def api_pedidos(cardapio_id):
 
         resultado.append({
             'id': p.id,
-            'usuario': p.usuario.nome,
+            # 🔹 se o usuário foi excluído, evita erro
+            'usuario': p.usuario.nome if p.usuario else "Usuário removido",
             'mistura': item_mistura,
             'bebida': item_bebida,
             'sobremesa': item_sobremesa,
@@ -132,7 +131,7 @@ def api_pedidos(cardapio_id):
 
     return jsonify(resultado)
 
-
+# Atualizar status do pedido
 @cozinha_bp.route('/pedido/<int:pedido_id>/status', methods=['POST'])
 @login_required
 def atualizar_status(pedido_id):
