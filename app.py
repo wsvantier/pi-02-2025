@@ -28,7 +28,7 @@ def user_loader(id):
 with app.app_context():
     db.create_all()
     from database import Usuario
-    if not Usuario.query.filter_by(user='admin').first():
+    if not Usuario.query.filter_by(tipo='admin').first():
         usuarios = ['admin', 'cozinha', 'funcionario']
         for u in usuarios:
             user = Usuario(user=u, nome=u, tipo=u)
