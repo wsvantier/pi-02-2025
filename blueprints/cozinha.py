@@ -33,10 +33,18 @@ def addDia():
 def listarDias():
     if current_user.tipo == 'funcionario':
         return redirect(url_for('cardapio.cardapio_home'))
-    
-    dias = Cardapio.query.all()
-    dados = [{'id': x.id, 'data': x.data.strftime('%d/%m/%Y')} for x in dias]
+
+    dias = Cardapio.query.order_by(Cardapio.data.asc()).all()
+    dados = [
+        {
+            'id': x.id,
+            'data_iso': x.data.strftime('%Y-%m-%d'),   # usado internamente
+            'data_br': x.data.strftime('%d/%m/%Y')     # mostrado no select
+        }
+        for x in dias
+    ]
     return jsonify(dados)
+
 
 # Adicionar opção
 @cozinha_bp.route('/addOpcao', methods=['POST'])
